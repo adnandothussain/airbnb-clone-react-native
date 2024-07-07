@@ -98,9 +98,8 @@ const ListingsMap = memo(({ listings }: Props) => {
         clusterFontFamily="mon-sb"
         style={{ flex: 1 }}
         renderCluster={renderCluster}
-        provider={PROVIDER_GOOGLE}
       >
-        {listings.features.map((item: any) => {
+        {listings.map((item: any) => {
           const lat = item.properties.latitude
             ? Number(item.properties.latitude)
             : INITIAL_REGION.latitude;
@@ -109,13 +108,17 @@ const ListingsMap = memo(({ listings }: Props) => {
             : INITIAL_REGION.longitude;
           return (
             <Marker
-              coordinate={{
-                latitude: lat,
-                longitude: lng,
-              }}
-              key={item.properties.id}
-              onPress={() => onMarkerSelected(item)}
-            />
+            coordinate={{
+              latitude: lat,
+              longitude: lng,
+            }}
+            key={item.properties.id}
+            onPress={() => onMarkerSelected(item)}
+          >
+            <View style={styles.marker}>
+              <Text style={styles.markerText}>€ {item.properties.price}</Text>
+            </View>
+          </Marker>
           );
         })}
       </MapView>

@@ -10,11 +10,23 @@ import ExploreHeader from '@/components/ExploreHeader';
 const Page = () => {
   const items = useMemo(() => listingsData as any, []);
   const getoItems = useMemo(() => listingsDataGeo, []);
-  const [category, setCategory] = useState<string>('Tiny homes');
+  const [category, setCategory] = useState<any>({
+    name: 'Tiny homes',
+    icon: 'home',
+    types: ['House', 'Condominium', 'Townhouse']
+  });
 
-  const onDataChanged = (category: string) => {
+  const onDataChanged = (category: any) => {
     setCategory(category);
   };
+
+  const filteredListings =useMemo(() => {
+    return items.filter((item) => category.name === 'Trending' ? item.reviews_per_month > 4.5 : category.types.includes(item.property_type))
+  }, [category])
+
+  const filteredGeoListings =useMemo(() => {
+    return getoItems.features.filter((item) => category.name === 'Trending' ? item.properties.reviews_per_month > 4.5 : category.types.includes(item.properties.property_type))
+  }, [category])
 
   return (
     <View style={{ flex: 1, marginTop: 80 }}>
@@ -24,8 +36,8 @@ const Page = () => {
           header: () => <ExploreHeader onCategoryChanged={onDataChanged} />,
         }}
       />
-      <ListingsMap listings={getoItems} />
-      <ListingsBottomSheet listings={items} category={category} />
+      <ListingsMap listings={filteredGeoListings} />
+      <ListingsBottomSheet listings={filteredListings} category={category.name} />
     </View>
   );
 };

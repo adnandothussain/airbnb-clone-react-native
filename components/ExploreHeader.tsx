@@ -10,10 +10,13 @@ const categories = [
   {
     name: 'Tiny homes',
     icon: 'home',
+    types: ['House', 'Condominium', 'Townhouse']
+
   },
   {
     name: 'Cabins',
     icon: 'house-siding',
+    types: ['Cabin']
   },
   {
     name: 'Trending',
@@ -22,23 +25,28 @@ const categories = [
   {
     name: 'Play',
     icon: 'videogame-asset',
+    types: ['Other']
   },
   {
     name: 'City',
     icon: 'apartment',
+    types: ["Apartment", 'Serviced apartment']
   },
   {
     name: 'Beachfront',
     icon: 'beach-access',
+    types: ['Bed & Breakfast']
   },
   {
     name: 'Countryside',
     icon: 'nature-people',
+    types: ['Bungalow', 'Vacation home']
+
   },
 ];
 
 interface Props {
-  onCategoryChanged: (category: string) => void;
+  onCategoryChanged: (category: any) => void;
 }
 
 const ExploreHeader = ({ onCategoryChanged }: Props) => {
@@ -53,7 +61,7 @@ const ExploreHeader = ({ onCategoryChanged }: Props) => {
       scrollRef.current?.scrollTo({ x: x - 16, y: 0, animated: true });
     });
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    onCategoryChanged(categories[index].name);
+    onCategoryChanged(categories[index]);
   };
 
   return (
