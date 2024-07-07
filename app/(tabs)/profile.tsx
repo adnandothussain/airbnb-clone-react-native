@@ -13,12 +13,13 @@ import { useAuth, useUser } from '@clerk/clerk-expo';
 import { defaultStyles } from '@/constants/Styles';
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '@/constants/Colors';
-import { Link } from 'expo-router';
+import { useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 
 const Page = () => {
   const { signOut, isSignedIn } = useAuth();
   const { user } = useUser();
+  const router = useRouter();
   const [firstName, setFirstName] = useState(user?.firstName);
   const [lastName, setLastName] = useState(user?.lastName);
   const [email, setEmail] = useState(user?.emailAddresses[0].emailAddress);
@@ -116,11 +117,7 @@ const Page = () => {
       )}
 
       {isSignedIn && <Button title="Log Out" onPress={() => signOut()} color={Colors.dark} />}
-      {!isSignedIn && (
-        <Link href={'/(modals)/login'} asChild>
-          <Button title="Log In" color={Colors.dark} />
-        </Link>
-      )}
+      {!isSignedIn && <Button title="Log In" onPress={() => router.replace('/(modals)/login')} color={Colors.dark} />}
     </SafeAreaView>
   );
 };
