@@ -1,5 +1,5 @@
 import { View } from 'react-native';
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
 import ListingsBottomSheet from '@/components/ListingsBottomSheet';
 import listingsData from '@/assets/data/airbnb-listings.json';
 import ListingsMap from '@/components/ListingsMap';
@@ -20,12 +20,14 @@ const Page = () => {
     setCategory(category);
   };
 
+  const calculateRating = useCallback((review_scores_rating : number) => { return (Number(review_scores_rating) / 20)}, [])
+
   const filteredListings =useMemo(() => {
-    return items.filter((item) => category.name === 'Trending' ? item.reviews_per_month > 4.5 : category.types.includes(item.property_type))
+    return items.filter((item) => category.name === 'Trending' ? calculateRating(item.review_scores_rating) > 4.5 : category.types.includes(item.property_type))
   }, [category])
 
   const filteredGeoListings =useMemo(() => {
-    return getoItems.features.filter((item) => category.name === 'Trending' ? item.properties.reviews_per_month > 4.5 : category.types.includes(item.properties.property_type))
+    return getoItems.features.filter((item) => category.name === 'Trending' ? calculateRating(item.properties.review_scores_rating) > 4.5 : category.types.includes(item.properties.property_type))
   }, [category])
 
   return (
