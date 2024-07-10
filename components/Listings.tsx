@@ -4,6 +4,7 @@ import {
   StyleSheet,
   ListRenderItem,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import { defaultStyles } from "@/constants/Styles";
 import { Ionicons } from "@expo/vector-icons";
@@ -41,15 +42,18 @@ const Listings = ({ listings: items, refresh, category }: Props) => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-    }, 200);
+    }, 400);
   }, [category]);
 
   const renderRow: ListRenderItem<any> = useCallback(
     ({ item }) => <MemoizedItem item={item} />,
-    [items]
+    []
   );
 
-  const keyExtractor = useCallback((item: any) => item.id.toString(), []);
+  const keyExtractor = useCallback(
+    (item: any, index: number) => `${item.id.toString()}_${index}`,
+    []
+  );
 
   const getItemLayout = useCallback(
     (_: any, index: number) => ({
@@ -60,16 +64,27 @@ const Listings = ({ listings: items, refresh, category }: Props) => {
     []
   );
 
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#000" />
+      </View>
+    );
+  }
+
   return (
     <View style={defaultStyles.container}>
       <BottomSheetFlatList
         renderItem={renderRow}
         keyExtractor={keyExtractor}
         data={items}
+        removeClippedSubviews={true}
         ref={listRef}
         ListHeaderComponent={<MemoizedHeader length={items.length} />}
         getItemLayout={getItemLayout}
-        maxToRenderPerBatch={8}
+        maxToRenderPerBatch={10}
+        windowSize={5}
+        initialNumToRender={10}
       />
     </View>
   );
@@ -111,6 +126,10 @@ const MemoizedItem = memo<{ item: any }>(({ item }) => (
     </TouchableOpacity>
   </Link>
 ));
+
+// const MemoizedList = memo<BottomSheetFlatListProps<any>>((props) => (
+//   <BottomSheetFlatList {...props} />
+// ));
 
 const MemoizedHeader = memo<{ length: number }>(({ length }) => (
   <Text style={styles.info}>{length} homes</Text>
